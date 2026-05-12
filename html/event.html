@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Дашборд події в місті</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .header .status {
+      background: #4caf50;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 24px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1rem;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .card p {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    .panel {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 24px;
+    }
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+    }
+    .schedule li, .info li {
+      padding: 12px 0;
+      border-bottom: 1px solid #ececec;
+      list-style: none;
+    }
+    .schedule li:last-child, .info li:last-child {
+      border-bottom: none;
+    }
+    .schedule time {
+      display: block;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    .schedule span {
+      color: #7f8c8d;
+    }
+    .map {
+      height: 260px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #9dabe4 0%, #7f8c8d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .tag {
+      background: #e8f3ff;
+      color: #0056b3;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+    }
+    .footer-note {
+      margin-top: 24px;
+      font-size: 0.95rem;
+      color: #7f8c8d;
+    }
+    @media (max-width: 900px) {
+      .overview {
+        grid-template-columns: 1fr;
+      }
+      .main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Подія: Міський фестиваль вуличної культури</h1>
+        <p>Дата: 18 серпня 2026 року • Локація: Центральний парк</p>
+      </div>
+      <div class="status">Активно</div>
+    </div>
+
+    <div class="overview">
+      <div class="card">
+        <h2>Гостей очікується</h2>
+        <p>4 200</p>
+      </div>
+      <div class="card">
+        <h2>Сцени</h2>
+        <p>5</p>
+      </div>
+      <div class="card">
+        <h2>Партнери</h2>
+        <p>12</p>
+      </div>
+    </div>
+
+    <div class="main">
+      <section class="panel">
+        <h2>Розклад</h2>
+        <ul class="schedule">
+          <li>
+            <time>10:00</time>
+            <span>Відкриття фестивалю та привітальне слово</span>
+          </li>
+          <li>
+            <time>12:00</time>
+            <span>Майстер-клас з графіті</span>
+          </li>
+          <li>
+            <time>14:00</time>
+            <span>Концерт місцевих музикантів</span>
+          </li>
+          <li>
+            <time>16:00</time>
+            <span>Фешн-показ вуличного стилю</span>
+          </li>
+          <li>
+            <time>18:00</time>
+            <span>Закриття та фаєр-шоу</span>
+          </li>
+        </ul>
+      </section>
+
+      <aside class="panel">
+        <h2>Інформація</h2>
+        <ul class="info">
+          <li>Місце: Центральний парк, вхід з вулиці Шевченка</li>
+          <li>Тривалість: 10:00 – 20:00</li>
+          <li>Цільова аудиторія: сім'ї, молодь, поціновувачі культури</li>
+          <li>Контакт: info@festival.ua</li>
+          <li>Вхід: безкоштовний</li>
+        </ul>
+
+        <div class="map">Мапа локації</div>
+
+        <div class="tags">
+          <span class="tag">Музика</span>
+          <span class="tag">Мистецтво</span>
+          <span class="tag">Майстер-класи</span>
+          <span class="tag">Сімейна атмосфера</span>
+        </div>
+      </aside>
+    </div>
+
+    <div class="footer-note">
+      Оновлено: 12 травня 2026 року. Слідкуйте за оновленнями програми та погодніми умовами.
+    </div>
+  </div>
+</body>
+</html>

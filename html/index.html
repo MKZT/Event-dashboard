@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дашборд для Подій у Місті</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        input, select, button {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+        }
+
+        .event-content {
+            padding: 20px;
+        }
+
+        .event-content h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .event-description {
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .event-location, .event-time {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .event-location::before, .event-time::before {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        .event-location::before {
+            content: "📍";
+        }
+
+        .event-time::before {
+            content: "🕐";
+        }
+
+        .event-footer {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 10px;
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .search-filters {
+                flex-direction: column;
+            }
+
+            input, select, button {
+                width: 100%;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .no-events {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎉 Дашборд Подій у Місті</h1>
+            <p>Знайдіть найцікавіші заходи у вашому регіоні</p>
+            
+            <div class="search-filters">
+                <input type="text" id="searchInput" placeholder="Пошук подій...">
+                <select id="categoryFilter">
+                    <option value="">Всі категорії</option>
+                    <option value="music">🎵 Музика</option>
+                    <option value="sports">⚽ Спорт</option>
+                    <option value="food">🍽️ Їжа</option>
+                    <option value="art">🎨 Мистецтво</option>
+                    <option value="technology">💻 Технологія</option>
+                </select>
+                <select id="cityFilter">
+                    <option value="">Всі міста</option>
+                    <option value="kyiv">Київ</option>
+                    <option value="lviv">Львів</option>
+                    <option value="kharkiv">Харків</option>
+                    <option value="odesa">Одеса</option>
+                </select>
+                <button onclick="applyFilters()">Пошук</button>
+                <button onclick="resetFilters()" style="background: #888;">Скинути</button>
+            </div>
+        </header>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <h3>Всього подій</h3>
+                <div class="number" id="totalEvents">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Сьогодні</h3>
+                <div class="number" id="todayEvents">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>На цьому тижні</h3>
+                <div class="number" id="weekEvents">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Популярні місця</h3>
+                <div class="number" id="popularVenues">0</div>
+            </div>
+        </div>
+
+        <div class="events-grid" id="eventsGrid"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Дашборд Подій. Всі права захищені. | Розробка веб-додатків на high-level</p>
+    </footer>
+
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Events Data
+        const eventsData = [
+            {
+                id: 1,
+                title: "Київський музичний фестиваль",
+                date: "2024-01-15",
+                time: "18:00",
+                location: "НСК Олімпійський, Київ",
+                city: "kyiv",
+                category: "music",
+                image: "🎵",
+                description: "Найбільший музичний фестиваль року з участю топ-артистів",
+                attendees: 5000
+            },
+            {
+                id: 2,
+                title: "Змаганння зі скейтбордингу",
+                date: "2024-01-16",
+                time: "14:00",
+                location: "Скейт-парк 'Extreme', Львів",
+                city: "lviv",
+                category: "sports",
+                image: "⚽",
+                description: "Міжнародне змаганння молодих спортсменів",
+                attendees: 2000
+            },
+            {
+                id: 3,
+                title: "Гастрономічний фестиваль",
+                date: "2024-01-17",
+                time: "11:00",
+                location: "Центральна площа, Одеса",
+                city: "odesa",
+                category: "food",
+                image: "🍽️",
+                description: "Смак світу: кухні різних країн у одному місці",
+                attendees: 3500
+            },
+            {
+                id: 4,
+                title: "Виставка сучасного мистецтва",
+                date: "2024-01-18",
+                time: "10:00",
+                location: "Музей мистецтва, Харків",
+                city: "kharkiv",
+                category: "art",
+                image: "🎨",
+                description: "Вистава робіт геніальних художників сучасності",
+                attendees: 1200
+            },
+            {
+                id: 5,
+                title: "TechConf 2024",
+                date: "2024-01-19",
+                time: "09:00",
+                location: "IT Arena, Київ",
+                city: "kyiv",
+                category: "technology",
+                image: "💻",
+                description: "Конференція лідерів технологічної індустрії",
+                attendees: 4000
+            },
+            {
+                id: 6,
+                title: "Концерт класичної музики",
+                date: "2024-01-20",
+                time: "19:00",
+                location: "Філармонія, Львів",
+                city: "lviv",
+                category: "music",
+                image: "🎵",
+                description: "Симфонічний оркестр виконує твори класиків",
+                attendees: 800
+            }
+        ];
+
+        let filteredEvents = [...eventsData];
+
+        // Initialize Dashboard
+        function init() {
+            displayEvents(eventsData);
+            updateStats(eventsData);
+        }
+
+        // Display Events
+        function displayEvents(events) {
+            const grid = document.getElementById('eventsGrid');
+            grid.innerHTML = '';
+
+            if (events.length === 0) {
+                grid.innerHTML = '<div class="no-events">Не знайдено подій за вашими критеріями</div>';
+                return;
+            }
+
+            events.forEach(event => {
+                const eventCard = createEventCard(event);
+                grid.appendChild(eventCard);
+            });
+        }
+
+        // Create Event Card
+        function createEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            card.innerHTML = `
+                <div class="event-image">${event.image}</div>
+                <div class="event-content">
+                    <h3>${event.title}</h3>
+                    <div class="event-meta">
+                        <span>${event.attendees} учасників</span>
+                        <span class="category-badge">${getCategoryName(event.category)}</span>
+                    </div>
+                    <div class="event-location">${event.location}</div>
+                    <div class="event-time">${event.date} о ${event.time}</div>
+                    <p class="event-description">${event.description}</p>
+                    <div class="event-footer">
+                        <button class="btn-secondary" onclick="shareEvent(${event.id})">Поділитися</button>
+                        <button class="btn-primary" onclick="showEventDetails(${event.id})">Деталі</button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // Get Category Name
+        function getCategoryName(category) {
+            const categories = {
+                music: "🎵 Музика",
+                sports: "⚽ Спорт",
+                food: "🍽️ Їжа",
+                art: "🎨 Мистецтво",
+                technology: "💻 Технологія"
+            };
+            return categories[category] || category;
+        }
+
+        // Update Statistics
+        function updateStats(events) {
+            const today = new Date().toISOString().split('T')[0];
+            const weekStart = new Date();
+            const weekEnd = new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+            const todayCount = events.filter(e => e.date === today).length;
+            const weekCount = events.filter(e => e.date >= today && e.date <= weekEnd.toISOString().split('T')[0]).length;
+            const venues = new Set(events.map(e => e.location)).size;
+
+            document.getElementById('totalEvents').textContent = events.length;
+            document.getElementById('todayEvents').textContent = todayCount;
+            document.getElementById('weekEvents').textContent = weekCount;
+            document.getElementById('popularVenues').textContent = venues;
+        }
+
+        // Apply Filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const city = document.getElementById('cityFilter').value;
+
+            filteredEvents = eventsData.filter(event => {
+                const matchesSearch = event.title.toLowerCase().includes(searchTerm) ||
+                                    event.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || event.category === category;
+                const matchesCity = !city || event.city === city;
+
+                return matchesSearch && matchesCategory && matchesCity;
+            });
+
+            displayEvents(filteredEvents);
+            updateStats(filteredEvents);
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('cityFilter').value = '';
+            filteredEvents = [...eventsData];
+            displayEvents(eventsData);
+            updateStats(eventsData);
+        }
+
+        // Show Event Details
+        function showEventDetails(eventId) {
+            const event = eventsData.find(e => e.id === eventId);
+            if (!event) return;
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <h2>${event.title}</h2>
+                <p><strong>Дата:</strong> ${event.date}</p>
+                <p><strong>Час:</strong> ${event.time}</p>
+                <p><strong>Місцезнаходження:</strong> ${event.location}</p>
+                <p><strong>Категорія:</strong> ${getCategoryName(event.category)}</p>
+                <p><strong>Очікуване учасників:</strong> ${event.attendees}</p>
+                <p><strong>Опис:</strong> ${event.description}</p>
+                <button class="btn-primary" onclick="registerEvent(${event.id})" style="width: 100%; margin-top: 20px;">Зареєструватися</button>
+            `;
+
+            document.getElementById('eventModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('eventModal').classList.remove('active');
+        }
+
+        // Register Event
+        function registerEvent(eventId) {
+            alert('Дякуємо за реєстрацію! Ви отримаєте деталі на вашу пошту.');
+            closeModal();
+        }
+
+        // Share Event
+        function shareEvent(eventId) {
+            const event = eventsData.find(e => e.id === eventId);
+            if (event) {
+                const text = `Приєднайтесь до мене на подію: "${event.title}" ${event.date} в ${event.location}`;
+                if (navigator.share) {
+                    navigator.share({ title: event.title, text: text });
+                } else {
+                    alert('Поділіться: ' + text);
+                }
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('eventModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
